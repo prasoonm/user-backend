@@ -1,9 +1,6 @@
 package com.daimler.userbackend;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +19,18 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getUsers() {
         return this.users;
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public User saveUser(@RequestBody User user) {
+        Long nextId = 0L;
+        if(this.users.size() != 0) {
+            User lastUser = this.users.stream().skip(this.users.size() - 1).findFirst().orElse(null);
+            nextId = lastUser.getId() + 1;
+        }
+        user.setId(nextId);
+        this.users.add(user);
+        return user;
     }
 
     List<User> buildUsers() {
